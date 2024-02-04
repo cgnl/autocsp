@@ -1,4 +1,4 @@
-# AutoCSP
+# AutoCSP (Code Guardian fork)
 
 ![](https://api.travis-ci.org/fcsonline/autocsp.svg)
 
