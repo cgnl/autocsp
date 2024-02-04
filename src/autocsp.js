@@ -8,8 +8,9 @@ const algorithms = {
   sha512: require('crypto-js/sha512')
 }
 
-const url_regexp = /(https?:)?\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/i;
-const domain_regexp = /(?!:\/\/)([a-zA-Z0-9]+\.)?[a-zA-Z0-9][a-zA-Z0-9-]+\.[a-zA-Z]{2,6}?/i;
+const url_regexp = /(https?:)?\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,9}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/i;
+const domain_regexp = /(?!:\/\/)[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,9}/i;
+;
 
 const AutoCSP = {
   algorithm: 'sha256',
@@ -82,8 +83,16 @@ const AutoCSP = {
     const media = $('audio source,video source').map((i, node) => $(node).attr('src'));
     const objects = $('object,embed').map((i, node) => $(node).attr('data') || $(node).attr('src'));
 
-    const fonts = ['/foo']; // FIXME
+    const fonts = [];
     const connects = ['/foo']; // FIXME
+
+    // Add the URLs of font resources
+    $('link[rel="stylesheet"]').each((i, node) => {
+      const href = $(node).attr('href');
+      if (/\.(woff|woff2)$/.test(href)) {
+        fonts.push(href);
+      }
+    });
 
     const default_src = " 'none'";
     const script_src  = this.getRemotes(scripts);
@@ -95,7 +104,7 @@ const AutoCSP = {
     const media_src   = this.getRemotes(media);
     const object_src  = this.getRemotes(objects);
 
-    const font_src    = this.getRemotes(fonts);
+    const font_src    = this.getRemotes(fonts); // Include font sources
     const connect_src = this.getRemotes(connects);
 
     return `Content-Security-Policy: default-src${default_src}; script-src${script_src}${digest_src}${nonce_src}; style-src${style_src}; img-src${img_src}; child-src${child_src}; font-src${font_src}; connect-src${connect_src}; media-src${media_src}; object-src${object_src};`;
