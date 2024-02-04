@@ -8,7 +8,7 @@ module.exports = {
     library: 'AutoCSP'
   },
   module: {
-    loaders: [
+    rules: [
     { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
     { test: /\.json$/, loader: 'json-loader' }
     ]

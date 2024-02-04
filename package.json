@@ -14,22 +14,23 @@
     "build": "webpack"
   },
   "author": {
-    "email": "fcsonlineb@gmail.com",
-    "name": "Ferran Basora"
+    "email": "hello@codeguardian.nl",
+    "name": "Code Guardian"
   },
   "license": "MIT",
   "repository": {
-    "url": "https://github.com/fcsonline/autocsp.git",
+    "url": "https://github.com/surimi1/autocsp.git",
     "type": "git"
   },
-  "bugs": "https://github.com/fcsonline/autocsp/issues",
+  "bugs": "https://github.com/surimi1/autocsp/",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
+    "@babel/preset-env": "^7.23.9",
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
     "babel-loader": "^9.1.3",
-    "babel-preset-es2015": "6.5.0",
     "http-server": "^14.1.1",
-    "json-loader": "0.5.4"
+    "json-loader": "0.5.7",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
