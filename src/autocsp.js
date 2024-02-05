@@ -138,7 +138,8 @@ const AutoCSP = {
   },
 
   getHashes(contents) {
-    const hashes = _.map(contents, (content) => {
+  	const uniqueContents = _.uniq(contents);
+    const hashes = _.map(uniqueContents, (content) => {
       return `'${this.hash(content)}'`;
     });
 
