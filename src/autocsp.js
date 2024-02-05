@@ -83,16 +83,48 @@ const AutoCSP = {
     const media = $('audio source,video source').map((i, node) => $(node).attr('src'));
     const objects = $('object,embed').map((i, node) => $(node).attr('data') || $(node).attr('src'));
 
-    const fonts = [];
     const connects = ['/foo']; // FIXME
 
-    // Add the URLs of font resources
-    $('link[rel="stylesheet"]').each((i, node) => {
-      const href = $(node).attr('href');
-      if (/\.(woff|woff2)$/.test(href)) {
-        fonts.push(href);
-      }
-    });
+	// URLs of font resources will be pushed to this array
+	let fonts = [];
+
+	// CORS proxy to bypass same-origin policy
+	const corsme = 'https://corsproxy.io/?';
+	const defaults = {mode: 'cors', cache: 'default'};
+
+	$('link[rel="stylesheet"]').each(function() {
+		let href = $(this).attr('href');
+		// Check if the href already starts with http:// or https://
+		if (!/^https?:\/\//.test(href)) {
+			// If not, prepend 'https:' to the href
+			href = 'https:' + href;
+		}
+		const url = `${corsme}${href}`;
+
+		// Fetch the stylesheet content through the CORS proxy
+		fetch(url, defaults)
+			.then(response => response.text())
+			.then(data => {
+				// Use a regular expression to find font URLs in the stylesheet content
+				const fontUrlRegex = /url\(["']?(.+?\.(woff2?))["']?\)/gi;
+				let match;
+				while ((match = fontUrlRegex.exec(data)) !== null) {
+					// Check if the matched font URL is absolute or relative
+					let fontUrl = match[1];
+					if (!/^https?:\/\//i.test(fontUrl)) {
+						// If the font URL is relative, resolve it against the stylesheet's URL
+						const baseUrl = href.substring(0, href.lastIndexOf('/') + 1);
+						fontUrl = baseUrl + fontUrl;
+					}
+					// Push the resolved font URL to the fonts array, if not already included
+					if (!fonts.includes(fontUrl)) {
+						fonts.push(fontUrl);
+					}
+				}
+			})
+			.catch(error => console.error('Error fetching or processing stylesheet:', error));
+	});
+
 
     const default_src = " 'none'";
     const script_src  = this.getRemotes(scripts);
@@ -139,7 +171,7 @@ const AutoCSP = {
 
   getHashes(contents) {
   	const uniqueContents = _.uniq(contents);
-    const hashes = _.map(uniqueContents, (content) => {
+    const hashes = _.map(contents, (content) => {
       return `'${this.hash(content)}'`;
     });
 
