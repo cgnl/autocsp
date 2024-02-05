@@ -129,7 +129,8 @@ const AutoCSP = {
   },
 
   getNonces(values) {
-    const nonces = _.map(values, (nonce) => {
+  	const uniqueValues = _.uniq(values);
+    const nonces = _.map(uniqueValues, (nonce) => {
       return `'nonce-${nonce}'`;
     });
 
