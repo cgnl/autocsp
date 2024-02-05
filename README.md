@@ -115,8 +115,7 @@ AutoCSP.integrities();
 
 ### TODO
 
-- Tests
-- Detect font-src urls: we need to parse css to retreive them
+- Detect font-src urls: preliminary support added to detect .woff and .woff2, but it is not very stable.
 - Detect connect urls: we need to analyze XHR traffic
 
 ### License
